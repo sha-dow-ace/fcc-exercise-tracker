@@ -60,14 +60,14 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
     return;
   }
   const exerciseObj = {
-    user_id: user.id,
+    user_id: user._id,
     description,
     duration,
     date: date ? new Date(date) : new Date()
   };
   const exercise = await Exercise.create(exerciseObj);
   res.json({
-    _id: user.id,
+    _id: user._id,
     username: user.username,
     description: exercise.description,
     date: new Date(exercise.date).toDateString()
@@ -95,7 +95,7 @@ app.get("/api/users/:_id/logs", async (req, res) =>{
   if(from || to){
     filter.date = dateObj;
   }
-  const exercises = await Exercise.find(filter);
+  const exercises = await Exercise.find(filter).limit(+limit ?? 500);
 
   const log = exercises.map(e => ({
     description: e.description,
